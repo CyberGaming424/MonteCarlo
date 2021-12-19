@@ -7,10 +7,19 @@ import cProfile
 import multiprocessing as mp
 import concurrent.futures
 import timeit
+import pandas as pd
+
+dataFrame = pd.DataFrame(columns=['N', 'RawPythonTime', 'RawPythonAccuracy',
+'RawParllelTime', 'RawParllelAccuracy', 'NumpyTime', 'NumpyAccuracy',
+'NumbaTime', 'NumbaAccuracy', 'NumbaParllelTime', 'NumbaParllelAccuracy'])
 
 #N = [10000, 100000, 1000000, 10000000, 1000000000, 100000000000]
 
 N = [1000, 10000]
+
+allTimes = []
+precision = []
+
 
 #Raw Python
 def raw():
@@ -41,9 +50,8 @@ def createSet():
     return [x, y]
 
 
-def calc(inCircleAmount, seed, size):
+def calc(inCircleAmount, size):
     setSize = round(size)
-    ran.seed(seed)
     inCircleCount = 0
     for x in range(setSize):
         if inCircle(createSet()):
@@ -65,7 +73,7 @@ def RawPPython():
         processes = []
         
         for i in range(10):
-            processes.append(mp.Process(target=calc, args=(totalInCircleCount,ran.random,individualSetSize)))
+            processes.append(mp.Process(target=calc, args=(totalInCircleCount,individualSetSize)))
 
         for i in range(len(processes)):
             processes[i].start()
